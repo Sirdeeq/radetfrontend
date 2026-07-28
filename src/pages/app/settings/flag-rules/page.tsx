@@ -321,10 +321,10 @@ function ColumnsTab({ columns, onSave }: { columns: Column[]; onSave: (c: Column
       width: 100,
       renderCell: (params) => (
         <div>
-          <IconButton size="small" onClick={() => handleEdit(params.row._gridRowId ?? params.rowIndex)}>
+          <IconButton size="small" onClick={() => handleEdit(params.row.id)}>
             Edit
           </IconButton>
-          <IconButton size="small" color="error" onClick={() => handleDelete(params.row._gridRowId ?? params.rowIndex)}>
+          <IconButton size="small" color="error" onClick={() => handleDelete(params.row.id)}>
             <DeleteIcon fontSize="small" />
           </IconButton>
         </div>
@@ -481,10 +481,10 @@ function FormulasTab({
       width: 100,
       renderCell: (params) => (
         <div>
-          <IconButton size="small" onClick={() => handleEdit(params.rowIndex)}>
+          <IconButton size="small" onClick={() => handleEdit(params.row.id)}>
             Edit
           </IconButton>
-          <IconButton size="small" color="error" onClick={() => handleDelete(params.rowIndex)}>
+          <IconButton size="small" color="error" onClick={() => handleDelete(params.row.id)}>
             <DeleteIcon fontSize="small" />
           </IconButton>
         </div>
@@ -681,10 +681,10 @@ function FlagRulesTab({
       width: 100,
       renderCell: (params) => (
         <div>
-          <IconButton size="small" onClick={() => handleEdit(params.rowIndex)}>
+          <IconButton size="small" onClick={() => handleEdit(params.row.id)}>
             Edit
           </IconButton>
-          <IconButton size="small" color="error" onClick={() => handleDelete(params.rowIndex)}>
+          <IconButton size="small" color="error" onClick={() => handleDelete(params.row.id)}>
             <DeleteIcon fontSize="small" />
           </IconButton>
         </div>
@@ -828,7 +828,7 @@ function TestPanel({
     testRules.mutate(
       { reportType, sampleRow: parsed },
       {
-        onSuccess: (data) => {
+        onSuccess: (data: any) => {
           setResult(data?.data);
         },
         onError: () => {

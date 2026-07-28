@@ -97,7 +97,7 @@ export default function Page() {
 
   const [selectedOrgId, setSelectedOrgId] = useState("");
   const [selectedFacilityId, setSelectedFacilityId] = useState("");
-  const { data: facsData } = useFacilities(isAdmin && selectedOrgId ? selectedOrgId : undefined);
+  const { data: facsData } = useFacilities(isAdmin && selectedOrgId ? { organization: selectedOrgId } : undefined);
   const facilities: any[] = facsData?.data?.facilities || [];
 
   const [activeStep, setActiveStep] = useState(0);
