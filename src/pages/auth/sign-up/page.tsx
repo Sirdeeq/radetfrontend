@@ -269,8 +269,8 @@ export default function Page() {
               <Box component="form" onSubmit={handleSubmit} className="flex flex-col gap-4">
                 <Box className="flex gap-3">
                   <TextField
-                    variant="standard"
                     label="First Name"
+                    placeholder="Enter your first name"
                     required
                     fullWidth
                     value={form.firstName}
@@ -279,8 +279,8 @@ export default function Page() {
                     helperText={errors.firstName}
                   />
                   <TextField
-                    variant="standard"
                     label="Last Name"
+                    placeholder="Enter your last name"
                     required
                     fullWidth
                     value={form.lastName}
@@ -291,8 +291,8 @@ export default function Page() {
                 </Box>
 
                 <TextField
-                  variant="standard"
                   label="Email"
+                  placeholder="Enter your email address"
                   type="email"
                   required
                   fullWidth
@@ -303,8 +303,8 @@ export default function Page() {
                 />
 
                 <TextField
-                  variant="standard"
                   label="Phone Number"
+                  placeholder="Enter your phone number"
                   required
                   fullWidth
                   value={form.phone}
@@ -314,8 +314,8 @@ export default function Page() {
                 />
 
                 <TextField
-                  variant="standard"
                   label="Username"
+                  placeholder="Choose a username"
                   required
                   fullWidth
                   value={form.username}
@@ -325,8 +325,8 @@ export default function Page() {
                 />
 
                 <TextField
-                  variant="standard"
                   label="Password"
+                  placeholder="Create a password"
                   type="password"
                   required
                   fullWidth
@@ -395,8 +395,8 @@ export default function Page() {
                 )}
 
                 <TextField
-                  variant="standard"
                   label="Confirm Password"
+                  placeholder="Re-enter your password"
                   type="password"
                   required
                   fullWidth
@@ -407,7 +407,7 @@ export default function Page() {
                   helperText={errors.confirmPassword}
                 />
 
-                <FormControl variant="standard" fullWidth error={!!errors.organizationId}>
+                <FormControl fullWidth error={!!errors.organizationId}>
                   <InputLabel>Implementing Partner *</InputLabel>
                   <Select
                     value={form.organizationId}
@@ -434,8 +434,8 @@ export default function Page() {
                     {addingNewFacility ? (
                       <Box className="flex flex-col gap-1">
                         <TextField
-                          variant="standard"
                           label="Facility Name"
+                          placeholder="Enter your facility/hospital name"
                           required
                           fullWidth
                           value={form.newFacilityName}
@@ -466,7 +466,7 @@ export default function Page() {
                         )}
                       </Box>
                     ) : (
-                      <FormControl variant="standard" fullWidth error={!!errors.facilityId}>
+                      <FormControl fullWidth error={!!errors.facilityId}>
                         <InputLabel>Facility *</InputLabel>
                         <Select
                           value={form.facilityId}
@@ -504,7 +504,7 @@ export default function Page() {
                   </Alert>
                 )}
 
-                <FormControl variant="standard" fullWidth error={!!errors.role}>
+                <FormControl fullWidth error={!!errors.role}>
                   <InputLabel>Role *</InputLabel>
                   <Select
                     value={form.role}
@@ -520,16 +520,16 @@ export default function Page() {
                 </FormControl>
 
                 <TextField
-                  variant="standard"
                   label="Department"
+                  placeholder="Enter your department (optional)"
                   fullWidth
                   value={form.department}
                   onChange={(e) => handleChange("department", e.target.value)}
                 />
 
                 <TextField
-                  variant="standard"
                   label="Staff ID"
+                  placeholder="Enter your staff ID (optional)"
                   fullWidth
                   value={form.staffId}
                   onChange={(e) => handleChange("staffId", e.target.value)}
