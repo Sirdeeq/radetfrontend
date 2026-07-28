@@ -49,9 +49,7 @@ export default function Page() {
   const { enqueueSnackbar } = useSnackbar();
   const [form, setForm] = useState(INITIAL_FORM);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [organizations, setOrganizations] = useState<any[]>([]);
   const [facilities, setFacilities] = useState<any[]>([]);
-  const [loadingOrgs, setLoadingOrgs] = useState(true);
   const [loadingFacilities, setLoadingFacilities] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [signupSuccess, setSignupSuccess] = useState(false);
@@ -61,11 +59,15 @@ export default function Page() {
   const [fuzzyLoading, setFuzzyLoading] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Fetch GGHN organization on mount and auto-select it
   useEffect(() => {
-    setLoadingOrgs(true);
     api.get<any>("/lookups/organizations").then((res) => {
-      setOrganizations(res.data?.organizations || res.organizations || []);
-    }).catch(() => {}).finally(() => setLoadingOrgs(false));
+      const orgs = res.data?.organizations || res.organizations || [];
+      const gghn = orgs.find((o: any) => o.code === "GGHN" || o.name === "GGHN" || o.name?.toLowerCase().includes("gghn"));
+      if (gghn) {
+        setForm((f) => ({ ...f, organizationId: gghn._id }));
+      }
+    }).catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -113,10 +115,6 @@ export default function Page() {
     }
   };
 
-  const handleOrgChange = (orgId: string) => {
-    handleChange("organizationId", orgId);
-  };
-
   const handleFacilitySelect = (value: string) => {
     if (value === "__new__") {
       setAddingNewFacility(true);
@@ -150,7 +148,6 @@ export default function Page() {
     }
     if (!form.confirmPassword) e.confirmPassword = "Required";
     else if (form.password !== form.confirmPassword) e.confirmPassword = "Passwords do not match";
-    if (!form.organizationId) e.organizationId = "Required";
     if (!addingNewFacility && !form.facilityId) e.facilityId = "Required";
     if (addingNewFacility && !form.newFacilityName.trim()) e.newFacilityName = "Required";
     if (!form.role) e.role = "Required";
@@ -406,28 +403,6 @@ export default function Page() {
                   error={!!errors.confirmPassword}
                   helperText={errors.confirmPassword}
                 />
-
-                <FormControl fullWidth error={!!errors.organizationId}>
-                  <InputLabel>Implementing Partner *</InputLabel>
-                  <Select
-                    value={form.organizationId}
-                    onChange={(e) => handleOrgChange(e.target.value)}
-                    disabled={loadingOrgs}
-                  >
-                    {loadingOrgs ? (
-                      <MenuItem value="" disabled>
-                        <CircularProgress size={18} /> <span className="ml-2">Loading...</span>
-                      </MenuItem>
-                    ) : (
-                      organizations.map((org: any) => (
-                        <MenuItem key={org._id} value={org._id}>
-                          {org.name}
-                        </MenuItem>
-                      ))
-                    )}
-                  </Select>
-                  {errors.organizationId && <FormHelperText>{errors.organizationId}</FormHelperText>}
-                </FormControl>
 
                 <Collapse in={!!form.organizationId}>
                   <Box className="flex flex-col gap-1">
