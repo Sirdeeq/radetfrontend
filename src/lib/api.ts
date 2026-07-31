@@ -168,21 +168,13 @@ export const getAccessToken = (): string | null => accessToken;
 
 export const initAuth = async (setUser: (user: any) => void, setLoading: (v: boolean) => void) => {
   try {
-    // Try to silently refresh the access token from the httpOnly refresh token cookie
-    const response = await fetch(`${API_BASE_URL}/auth/refresh-token`, {
-      method: "POST",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      if (data.data?.accessToken) {
-        setAccessToken(data.data.accessToken);
-        const user = await authApi.getMe();
-        setUser(user);
-        return;
-      }
+    // Use the shared refresh guard so only ONE refresh request ever runs concurrently.
+    // Multiple callers during the same tick share the same in-flight promise.
+    const newToken = await handleTokenRefresh();
+    if (newToken) {
+      const user = await authApi.getMe();
+      setUser(user);
+      return;
     }
 
     // Refresh failed — user is not logged in
