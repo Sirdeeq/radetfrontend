@@ -65,21 +65,31 @@ const handleTokenRefresh = async (): Promise<string | null> => {
 
   refreshPromise = (async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/auth/refresh-token`, {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-      });
+      // Retry once: browser tabs share the httpOnly refresh cookie but not JS
+      // state. If a second tab raced the refresh with the same (now-rotated)
+      // token, the winner's Set-Cookie has already updated the shared jar by the
+      // time we retry, so the retry succeeds instead of logging the user out.
+      for (let attempt = 0; attempt < 2; attempt++) {
+        const response = await fetch(`${API_BASE_URL}/auth/refresh-token`, {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+        });
 
-      if (!response.ok) {
-        setAccessToken(null);
-        return null;
+        if (response.ok) {
+          const data = await response.json();
+          const newToken = data.data.accessToken;
+          setAccessToken(newToken);
+          return newToken;
+        }
+
+        if (attempt === 0) {
+          await new Promise((r) => setTimeout(r, 300));
+        }
       }
 
-      const data = await response.json();
-      const newToken = data.data.accessToken;
-      setAccessToken(newToken);
-      return newToken;
+      setAccessToken(null);
+      return null;
     } catch {
       setAccessToken(null);
       return null;
